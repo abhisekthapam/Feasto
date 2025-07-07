@@ -5,6 +5,7 @@ import UserAbout from "../modules/user/pages/UserAbout";
 import AdminRouter from "../modules/admin/router/AdminRouter";
 import SuperAdminRouter from "../modules/super-admin/router/SuperAdminRouter";
 import Login from "../pages/Login";
+import Register from "../pages/Register";
 import UserNavbar from "../modules/user/components/UserNavbar";
 import UserSolution from "../modules/user/pages/UserSolution";
 import UserContact from "../modules/user/pages/UserContact";
@@ -24,6 +25,7 @@ function Router() {
         <Route path="/solutions" element={<UserSolution />} />
         <Route path="/contact-us" element={<UserContact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/admin/*"
           element={
