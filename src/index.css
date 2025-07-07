@@ -1,7 +1,163 @@
+@import 'remixicon/fonts/remixicon.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Remove native smooth scrolling - Lenis will handle this */
+  scroll-behavior: auto;
+}
+
 body {
-  @apply bg-background text-foreground text-sm;
+  @apply text-sm bg-background text-foreground;
+  margin: 0;
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+  /* Remove padding-top as we'll handle it per component */
+}
+
+/* Lenis scrollbar styling */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Fixed navbar spacing utility */
+.navbar-spacing {
+  padding-top: 5rem; /* Space for fixed navbar */
+}
+
+/* Custom ultra-thin scrollbar styling */
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 1px; /* Ultra-minimal scrollbar width */
+  height: 1px; /* For horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Invisible track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.7); /* Semi-transparent gold */
+  border-radius: 0; /* No rounded edges for minimal look */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.9); /* More visible on hover */
+  width: 2px; /* Slightly wider on hover */
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox scrollbar styling */
+html {
+  scrollbar-width: thin; /* Make scrollbar thin */
+  scrollbar-color: rgba(255, 215, 0, 0.7) transparent; /* Semi-transparent gold thumb, transparent track */
+}
+
+/* Additional styling for very minimal appearance */
+body::-webkit-scrollbar {
+  width: 1px; /* Ultra-thin for body */
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.5); /* Very subtle gold */
+  border-radius: 0; /* Sharp edges for minimal stick look */
+  transition: all 0.2s ease;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.8); /* More visible on hover */
+  width: 2px; /* Grows slightly on hover */
+}
+
+/* Hide scrollbar completely when not scrolling (optional) */
+.auto-hide-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.auto-hide-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.6);
+}
+
+/* Utility classes for different scrollbar styles */
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #FFD700 transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.8);
+}
+
+/* Ultra-minimal stick-like scrollbar */
+.scrollbar-stick {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 215, 0, 0.6) transparent;
+}
+
+.scrollbar-stick::-webkit-scrollbar {
+  width: 0.5px; /* Extremely thin stick */
+  height: 0.5px;
+}
+
+.scrollbar-stick::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-stick::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.6);
+  border-radius: 0; /* No rounded edges for stick effect */
+}
+
+.scrollbar-stick::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.8);
+  width: 1px; /* Slightly wider on hover */
 }
