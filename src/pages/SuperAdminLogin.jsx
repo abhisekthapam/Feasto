@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -8,20 +8,20 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 
-function Login() {
+function SuperAdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const initialValues = {
-    businessEmail: "",
+    email: "",
     password: "",
   };
 
   const validationSchema = Yup.object({
-    businessEmail: Yup.string()
+    email: Yup.string()
       .email("Invalid email address")
-      .required("Business email is required"),
+      .required("Email is required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
@@ -29,18 +29,18 @@ function Login() {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const res = await axios.post("http://localhost:5000/admin/login", values);
+      const res = await axios.post("http://localhost:5000/superadmin/auth/login", values);
       if (res.data.token && res.data.user) {
         login(res.data.user, res.data.token);
         toast.success("Login successful!", { position: "top-right" });
         setTimeout(() => {
-          navigate("/admin");
+          navigate("/superadmin");
         }, 1200);
       } else if (res.data.token) {
-        login({ role: "admin" }, res.data.token);
+        login({ role: "superadmin" }, res.data.token);
         toast.success("Login successful!", { position: "top-right" });
         setTimeout(() => {
-          navigate("/admin");
+          navigate("/superadmin");
         }, 1200);
       } else {
         toast.error("Invalid response from server.", { position: "top-right" });
@@ -74,35 +74,18 @@ function Login() {
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[#1B1B1B]/90 to-[#1B1B1B]/70 backdrop-blur-sm" />
-          <div className="absolute top-0 left-0 z-0 w-full h-full overflow-hidden pointer-events-none">
-            {[0, 2, 4, 6, 8, 10].map((delay, i) => (
-              <div
-                key={i}
-                className={`absolute bg-[#FFD700] rounded-full`}
-                style={{
-                  width: [15, 10, 20, 12, 8, 18][i],
-                  height: [15, 10, 20, 12, 8, 18][i],
-                  top: ["10%", "20%", "30%", "70%", "80%", "40%"][i],
-                  left: ["10%", "20%", "70%", "30%", "80%", "40%"][i],
-                  opacity: [0.2, 0.15, 0.1, 0.2, 0.15, 0.1][i],
-                  animation: "float 15s infinite ease-in-out",
-                  animationDelay: `${delay}s`,
-                }}
-              />
-            ))}
-          </div>
           <div className="relative w-full max-w-md p-4 rounded-lg shadow-xl sm:p-6 md:p-8 glass-effect">
             <div className="mb-8 lg:hidden">
               <span className="font-['Pacifico'] text-2xl text-white">
-                Feasto
+                Feasto SuperAdmin
               </span>
             </div>
             <div className="py-1 mb-8 text-center">
               <h1 className="mb-2 text-3xl font-bold text-white">
-                Welcome Back
+                SuperAdmin Login
               </h1>
               <p className="text-[#DADADA] text-sm">
-                Sign in to continue to your account
+                Sign in to your superadmin account
               </p>
             </div>
             <Formik
@@ -114,20 +97,20 @@ function Login() {
                 <Form>
                   <div className="mb-6">
                     <label
-                      htmlFor="businessEmail"
+                      htmlFor="email"
                       className="block text-[#DADADA] text-sm mb-2"
                     >
-                      Business Email
+                      Email
                     </label>
                     <Field
                       type="email"
-                      id="businessEmail"
-                      name="businessEmail"
+                      id="email"
+                      name="email"
                       className="w-full px-4 py-3 rounded-lg bg-[#232323]/80 border border-[#BDC3C7] text-white placeholder-[#DADADA] focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 outline-none transition"
-                      placeholder="your@email.com"
+                      placeholder="superadmin@email.com"
                     />
                     <ErrorMessage
-                      name="businessEmail"
+                      name="email"
                       component="div"
                       className="mt-1 text-xs text-red-400"
                     />
@@ -166,27 +149,6 @@ function Login() {
                       className="mt-1 text-xs text-red-400"
                     />
                   </div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="remember"
-                        className="w-4 h-4 rounded border border-[#BDC3C7] bg-[#232323]/80 checked:bg-[#FFD700] checked:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition"
-                      />
-                      <label
-                        htmlFor="remember"
-                        className="text-[#DADADA] text-sm ml-2"
-                      >
-                        Remember me
-                      </label>
-                    </div>
-                    <a
-                      href="#"
-                      className="text-[#DADADA] text-sm hover:text-white transition-colors"
-                    >
-                      Forgot Password?
-                    </a>
-                  </div>
                   <button
                     type="submit"
                     className="w-full py-3 font-medium rounded-lg bg-[#FFD700] text-[#1B1B1B] hover:bg-gradient-to-r hover:from-[#FFD700] hover:to-[#FFC107] hover:-translate-y-0.5 hover:shadow-lg transition mb-6"
@@ -194,47 +156,13 @@ function Login() {
                   >
                     {isSubmitting ? "Signing In..." : "Sign In"}
                   </button>
-                  <div className="flex items-center my-6">
-                    <div className="flex-1 h-px bg-[#BDC3C7] opacity-20"></div>
-                    <span className="px-4 text-sm text-[#DADADA]">
-                      Or continue with
-                    </span>
-                    <div className="flex-1 h-px bg-[#BDC3C7] opacity-20"></div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3 mb-6">
-                    <button
-                      type="button"
-                      className="flex items-center justify-center py-3 rounded-lg bg-[#232323]/80 border border-[#BDC3C7]/20 hover:shadow-lg hover:border-[#FFD700]/40 transition"
-                    >
-                      <div className="flex items-center justify-center w-5 h-5">
-                        <i className="text-white ri-google-fill"></i>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      className="flex items-center justify-center py-3 rounded-lg bg-[#232323]/80 border border-[#BDC3C7]/20 hover:shadow-lg hover:border-[#FFD700]/40 transition"
-                    >
-                      <div className="flex items-center justify-center w-5 h-5">
-                        <i className="text-white ri-facebook-fill"></i>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      className="flex items-center justify-center py-3 rounded-lg bg-[#232323]/80 border border-[#BDC3C7]/20 hover:shadow-lg hover:border-[#FFD700]/40 transition"
-                    >
-                      <div className="flex items-center justify-center w-5 h-5">
-                        <i className="text-white ri-apple-fill"></i>
-                      </div>
-                    </button>
-                  </div>
                   <div className="text-center">
                     <p className="text-[#DADADA] text-sm">
-                      Don't have an account?{" "}
                       <Link
-                        to="/register"
+                        to="/login"
                         className="text-[#FFD700] hover:text-white transition-colors"
                       >
-                        Create Account
+                        Login as Admin/User
                       </Link>
                     </p>
                   </div>
@@ -245,12 +173,6 @@ function Login() {
         </div>
       </div>
       <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0) translateX(0);}
-          25% { transform: translateY(-30px) translateX(15px);}
-          50% { transform: translateY(-15px) translateX(30px);}
-          75% { transform: translateY(-25px) translateX(-15px);}
-        }
         .font-pacifico { font-family: 'Pacifico', cursive; }
         .glass-effect {
           background: rgba(27, 27, 27, 0.7);
@@ -263,4 +185,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SuperAdminLogin;
