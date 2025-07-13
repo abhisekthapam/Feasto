@@ -9,6 +9,7 @@ import Register from "../pages/Register";
 import UserNavbar from "../modules/user/components/UserNavbar";
 import UserSolution from "../modules/user/pages/UserSolution";
 import UserContact from "../modules/user/pages/UserContact";
+import SuperAdminLogin from "../pages/SuperAdminLogin";
 
 function Router() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function Router() {
         <Route path="/contact-us" element={<UserContact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/superadmin/login" element={<SuperAdminLogin />} />
         <Route
           path="/admin/*"
           element={
