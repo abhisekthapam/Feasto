@@ -4,47 +4,41 @@ import { AiOutlineUser } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdOutlineClose } from "react-icons/md";
 import { Link, NavLink } from "react-router-dom";
-import { useLenisContext } from "../../../context/LenisContext";
 
 function UserNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true);
-  const { scrollTo } = useLenisContext();
 
   const toggleMenu = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  // Smooth scroll to section
   const handleScrollToSection = useCallback((sectionId, offset = -80) => {
-    scrollTo(sectionId, {
-      offset,
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-    });
+    const element = document.getElementById(sectionId.replace("#", ""));
+    if (element) {
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + offset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
     setIsOpen(false);
-  }, [scrollTo]);
+  }, []);
 
   const controlNavbar = useCallback(() => {
     const currentScrollY = window.scrollY;
-    
-    // Check if at top of page
+
     setIsAtTop(currentScrollY < 10);
-    
+
     if (currentScrollY < 10) {
-      // Always show navbar at the top
       setIsVisible(true);
     } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-      // Scrolling down - hide navbar
       setIsVisible(false);
-      setIsOpen(false); // Close mobile menu when hiding
+      setIsOpen(false);
     } else if (currentScrollY < lastScrollY) {
-      // Scrolling up - show navbar
       setIsVisible(true);
     }
-    
+
     setLastScrollY(currentScrollY);
   }, [lastScrollY]);
 
@@ -53,54 +47,62 @@ function UserNavbar() {
       controlNavbar();
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [controlNavbar]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = '0px'; // Prevent layout shift
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = "0px"; // Prevent layout shift
     } else {
-      document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = 'unset';
+      document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "unset";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
-      document.body.style.paddingRight = 'unset';
+      document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "unset";
     };
   }, [isOpen]);
 
   // Close mobile menu on escape key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
 
   return (
-    <nav 
+    <nav
       className={`
         fixed top-0 left-0 right-0 z-[9999] 
         px-3 sm:px-[3%] xl:px-[5%] py-3 
         transition-all duration-300 ease-in-out
-        ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
-        ${isAtTop ? 'bg-transparent backdrop-blur-none' : 'backdrop-blur-md bg-black/30'}
+        ${
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-full opacity-0"
+        }
+        ${
+          isAtTop
+            ? "bg-transparent backdrop-blur-none"
+            : "backdrop-blur-md bg-black/30"
+        }
         select-none
         min-h-[4rem]
       `}
     >
-      <div className="flex justify-between items-center max-w-7xl mx-auto">
-        <div className="flex space-x-8 lg:space-x-28 items-end py-2 flex-1">
+      <div className="flex items-center justify-between mx-auto max-w-7xl">
+        <div className="flex items-end flex-1 py-2 space-x-8 lg:space-x-28">
           <Link to="/" className="flex-shrink-0">
             <svg
               width="86"
@@ -116,42 +118,42 @@ function UserNavbar() {
               />
             </svg>
           </Link>
-          <div className="hidden md:flex space-x-4 lg:space-x-6 items-center">
-            <NavLink 
-              to="/" 
-              className={({ isActive }) => 
+          <div className="items-center hidden space-x-4 md:flex lg:space-x-6">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
                 `text-white hover:text-yellow-400 transition-colors duration-200 font-medium text-sm lg:text-base ${
-                  isActive ? 'text-yellow-400' : ''
+                  isActive ? "text-yellow-400" : ""
                 }`
               }
             >
               Home
             </NavLink>
-            <NavLink 
-              to="/about-us" 
-              className={({ isActive }) => 
+            <NavLink
+              to="/about-us"
+              className={({ isActive }) =>
                 `text-white hover:text-yellow-400 transition-colors duration-200 font-medium text-sm lg:text-base ${
-                  isActive ? 'text-yellow-400' : ''
+                  isActive ? "text-yellow-400" : ""
                 }`
               }
             >
               About Us
             </NavLink>
-            <NavLink 
-              to="/solutions" 
-              className={({ isActive }) => 
+            <NavLink
+              to="/solutions"
+              className={({ isActive }) =>
                 `text-white hover:text-yellow-400 transition-colors duration-200 font-medium text-sm lg:text-base ${
-                  isActive ? 'text-yellow-400' : ''
+                  isActive ? "text-yellow-400" : ""
                 }`
               }
             >
               Solutions
             </NavLink>
-            <NavLink 
-              to="/contact-us" 
-              className={({ isActive }) => 
+            <NavLink
+              to="/contact-us"
+              className={({ isActive }) =>
                 `text-white hover:text-yellow-400 transition-colors duration-200 font-medium text-sm lg:text-base ${
-                  isActive ? 'text-yellow-400' : ''
+                  isActive ? "text-yellow-400" : ""
                 }`
               }
             >
@@ -160,23 +162,23 @@ function UserNavbar() {
           </div>
         </div>
         <div className="flex items-center justify-end flex-shrink-0">
-          <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
-            <button className="p-2 text-white hover:text-yellow-400 transition-colors duration-200">
+          <div className="items-center hidden space-x-3 md:flex lg:space-x-4">
+            <button className="p-2 text-white transition-colors duration-200 hover:text-yellow-400">
               <IoMdNotificationsOutline className="w-5 h-5 lg:w-6 lg:h-6" />
             </button>
-            <button className="p-2 text-white hover:text-yellow-400 transition-colors duration-200">
+            <button className="p-2 text-white transition-colors duration-200 hover:text-yellow-400">
               <AiOutlineUser className="w-5 h-5 lg:w-6 lg:h-6" />
             </button>
             <Link to="/login">
-              <button className="bg-primary hover:bg-yellow-400 text-black font-semibold px-3 py-2 lg:px-4 lg:py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 text-sm lg:text-base">
+              <button className="px-3 py-2 text-sm font-semibold text-black transition-all duration-200 transform rounded-lg shadow-lg bg-primary hover:bg-yellow-400 lg:px-4 lg:py-2 hover:shadow-xl hover:scale-105 lg:text-base">
                 Sign-in
               </button>
             </Link>
           </div>
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={toggleMenu} 
-              className="p-2 text-white hover:text-yellow-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 rounded"
+          <div className="flex items-center md:hidden">
+            <button
+              onClick={toggleMenu}
+              className="p-2 text-white transition-colors duration-200 rounded hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
               aria-label={isOpen ? "Close menu" : "Open menu"}
             >
               {isOpen ? (
@@ -188,24 +190,25 @@ function UserNavbar() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile Menu Overlay */}
-      <div 
+      <div
         className={`
           fixed inset-0 z-[10000] bg-black/98 backdrop-blur-xl
           flex flex-col items-center justify-center
           transition-all duration-500 ease-in-out md:hidden
-          ${isOpen 
-            ? 'opacity-100 visible transform translate-x-0' 
-            : 'opacity-0 invisible transform translate-x-full'
+          ${
+            isOpen
+              ? "opacity-100 visible transform translate-x-0"
+              : "opacity-0 invisible transform translate-x-full"
           }
         `}
         style={{
-          width: '100vw',
-          height: '100vh',
+          width: "100vw",
+          height: "100vh",
           top: 0,
           left: 0,
-          position: 'fixed'
+          position: "fixed",
         }}
       >
         {/* Top Section with Logo and Close Button */}
@@ -225,33 +228,33 @@ function UserNavbar() {
               />
             </svg>
           </Link>
-          
-          <button 
-            onClick={toggleMenu} 
-            className="p-3 text-white hover:text-yellow-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 rounded-full bg-white/10 backdrop-blur-sm"
+
+          <button
+            onClick={toggleMenu}
+            className="p-3 text-white transition-colors duration-200 rounded-full hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 bg-white/10 backdrop-blur-sm"
             aria-label="Close menu"
           >
             <MdOutlineClose className="w-7 h-7" />
           </button>
         </div>
-        
+
         {/* Navigation Links */}
-        <div className="flex flex-col space-y-10 text-center mt-8">
-          <NavLink 
-            className={({ isActive }) => 
+        <div className="flex flex-col mt-8 space-y-10 text-center">
+          <NavLink
+            className={({ isActive }) =>
               `text-3xl font-bold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-110 ${
-                isActive ? 'text-yellow-400 scale-105' : ''
+                isActive ? "text-yellow-400 scale-105" : ""
               }`
             }
-            onClick={() => setIsOpen(false)} 
+            onClick={() => setIsOpen(false)}
             to="/"
           >
             Home
           </NavLink>
           <NavLink
-            className={({ isActive }) => 
+            className={({ isActive }) =>
               `text-3xl font-bold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-110 ${
-                isActive ? 'text-yellow-400 scale-105' : ''
+                isActive ? "text-yellow-400 scale-105" : ""
               }`
             }
             onClick={() => setIsOpen(false)}
@@ -260,9 +263,9 @@ function UserNavbar() {
             About Us
           </NavLink>
           <NavLink
-            className={({ isActive }) => 
+            className={({ isActive }) =>
               `text-3xl font-bold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-110 ${
-                isActive ? 'text-yellow-400 scale-105' : ''
+                isActive ? "text-yellow-400 scale-105" : ""
               }`
             }
             onClick={() => setIsOpen(false)}
@@ -271,9 +274,9 @@ function UserNavbar() {
             Solutions
           </NavLink>
           <NavLink
-            className={({ isActive }) => 
+            className={({ isActive }) =>
               `text-3xl font-bold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-110 ${
-                isActive ? 'text-yellow-400 scale-105' : ''
+                isActive ? "text-yellow-400 scale-105" : ""
               }`
             }
             onClick={() => setIsOpen(false)}
@@ -282,29 +285,29 @@ function UserNavbar() {
             Contact Us
           </NavLink>
         </div>
-        
+
         {/* Action Buttons */}
-        <div className="flex flex-col items-center space-y-8 mt-12">
+        <div className="flex flex-col items-center mt-12 space-y-8">
           <div className="flex items-center space-x-8">
-            <button className="p-4 text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-110 bg-white/10 backdrop-blur-sm rounded-full">
+            <button className="p-4 text-white transition-all duration-300 transform rounded-full hover:text-yellow-400 hover:scale-110 bg-white/10 backdrop-blur-sm">
               <IoMdNotificationsOutline className="w-8 h-8" />
             </button>
-            <button className="p-4 text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-110 bg-white/10 backdrop-blur-sm rounded-full">
+            <button className="p-4 text-white transition-all duration-300 transform rounded-full hover:text-yellow-400 hover:scale-110 bg-white/10 backdrop-blur-sm">
               <AiOutlineUser className="w-8 h-8" />
             </button>
           </div>
-          
+
           <Link to="/login" onClick={() => setIsOpen(false)}>
-            <button className="bg-primary hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-2xl hover:shadow-yellow-400/25 transform hover:scale-105 text-xl">
+            <button className="px-8 py-4 text-xl font-bold text-black transition-all duration-300 transform shadow-2xl bg-primary hover:bg-yellow-400 rounded-xl hover:shadow-yellow-400/25 hover:scale-105">
               Sign-in
             </button>
           </Link>
         </div>
-        
+
         {/* Background Animation */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/3 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute rounded-full top-1/4 left-1/4 w-96 h-96 bg-yellow-400/5 blur-3xl animate-pulse"></div>
+          <div className="absolute delay-1000 rounded-full bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/3 blur-3xl animate-pulse"></div>
         </div>
       </div>
     </nav>
